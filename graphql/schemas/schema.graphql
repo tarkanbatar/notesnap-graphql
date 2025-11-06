@@ -1,0 +1,4 @@
+# Root schema file - types are loaded from ./types/ folder automatically
+# This file can be empty or used for global directives/scalars
+
+scalar DateTime

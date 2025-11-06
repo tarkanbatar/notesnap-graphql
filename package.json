@@ -1,0 +1,23 @@
+{
+  "name": "graphql-notesnap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "nodemon --ext js,graphql,json  app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@graphql-tools/load-files": "^7.0.1",
+    "apollo-server-express": "^3.13.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "graphql-tools": "^9.0.22",
+    "mongoose": "^8.19.3",
+    "nodemon": "^3.1.10"
+  }
+}
