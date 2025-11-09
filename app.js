@@ -7,6 +7,7 @@ const { loadFilesSync } = require("@graphql-tools/load-files");
 const { mergeTypeDefs } = require("@graphql-tools/merge");
 const resolvers = require("./graphql/resolvers");
 const User = require("./database/models/User");
+const Snap = require("./database/models/Snap");
 
 const typesArray = loadFilesSync(path.join(__dirname, "graphql", "**/*.graphql"));
 const typeDefs = mergeTypeDefs(typesArray); 
@@ -18,7 +19,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: () => ({
-    db: { User },
+    db: { User, Snap },
   }),
 });
 
