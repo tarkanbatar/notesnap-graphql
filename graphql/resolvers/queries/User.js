@@ -1,5 +1,7 @@
 const User = {
-    user: (parent, args, context, info) => {
-        return context.db.User.findById(args.id);
+    snaps: async (parent, args, context, info) => {
+        return await context.db.Snap.find({ userId: parent.id });
     },
 }
+
+module.exports = User;

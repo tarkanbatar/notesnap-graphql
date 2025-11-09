@@ -1,6 +1,7 @@
 type Snap {
     message: String!
     createdAt: String!
+    user: User!
 }
 
 type Query {
