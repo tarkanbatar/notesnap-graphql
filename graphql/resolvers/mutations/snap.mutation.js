@@ -2,7 +2,7 @@ module.exports = {
     addSnap: async (parent, args, context) => {
         const { input } = args;
 
-        const newSnap = new context.db.Snap({
+        const newSnap = await new context.db.Snap({
             message: input.message,
             userId: input.userId,
         });

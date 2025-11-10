@@ -1,13 +1,17 @@
+scalar Date
+
 type User {
   id: ID!
   username: String!
-  createdAt: String!
+  createdAt: Date!
   snaps: [Snap!]!
 }
 
 type Query {
   user(id: ID!): User
   users: [User!]!
+
+  activeUser: User
 }
 
 input NewUserInput {
@@ -15,6 +19,12 @@ input NewUserInput {
   password: String!
 }
 
+input SignInInput {
+  username: String!
+  password: String!
+}
+
 type Mutation {
-  addUser(input: NewUserInput!): User!
+  addUser(input: NewUserInput!): Token!
+  signIn(input: SignInInput!): Token!
 }

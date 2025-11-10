@@ -1,4 +1,5 @@
 type Snap {
+    id: ID!
     message: String!
     createdAt: String!
     user: User!
