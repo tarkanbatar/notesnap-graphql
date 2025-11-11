@@ -18,3 +18,7 @@ input NewSnapInput {
 type Mutation {
     addSnap(input: NewSnapInput!): Snap!
 }
+
+type Subscription {
+    createSnap: Snap!
+}

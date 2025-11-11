@@ -2,27 +2,72 @@ require("dotenv").config();
 
 const express = require("express");
 const { ApolloServer } = require("apollo-server-express");
+const { createServer } = require("http");
+const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
+const { makeExecutableSchema } = require("@graphql-tools/schema");
+const { WebSocketServer } = require("ws");
+const { useServer } = require("graphql-ws/use/ws");
 const path = require("path");
 const { loadFilesSync } = require("@graphql-tools/load-files");
 const { mergeTypeDefs } = require("@graphql-tools/merge");
+const { PubSub } = require("graphql-subscriptions");
 const resolvers = require("./graphql/resolvers");
 const User = require("./database/models/User");
 const Snap = require("./database/models/Snap");
 const jwt = require("jsonwebtoken");
+
+// Create PubSub instance
+const pubsub = new PubSub();
 
 const typesArray = loadFilesSync(path.join(__dirname, "graphql", "**/*.graphql"));
 const typeDefs = mergeTypeDefs(typesArray); 
 
 const db = require("./database/database");
 const app = express();
+const httpServer = createServer(app);
+
+// Create schema
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+// WebSocket server for subscriptions
+const wsServer = new WebSocketServer({
+  server: httpServer,
+  path: '/graphql',
+});
+
+const serverCleanup = useServer(
+  {
+    schema,
+    context: async (ctx) => {
+      // WebSocket context for subscriptions
+      return {
+        db: { User, Snap },
+        pubsub,
+      };
+    },
+  },
+  wsServer
+);
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema,
   context: ({req}) => ({
     db: { User, Snap },
-    activeUser: req.activeUser
+    activeUser: req.activeUser,
+    pubsub,
   }),
+  plugins: [
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    {
+      async serverWillStart() {
+        return {
+          async drainServer() {
+            await serverCleanup.dispose();
+          },
+        };
+      },
+    },
+  ],
 });
 
 async function startServer() {
@@ -47,8 +92,8 @@ async function startServer() {
 
   server.applyMiddleware({ app });
 
-  app.listen({ port: 4000 }, () =>
-    console.log(`Server ready at http://localhost:4000${server.graphqlPath}`)
+  httpServer.listen({ port: 4000 }, () =>
+    console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
   );
 }
 
