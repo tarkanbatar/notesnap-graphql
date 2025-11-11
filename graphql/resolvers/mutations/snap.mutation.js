@@ -8,7 +8,7 @@ module.exports = {
         userId: input.userId,
       });
 
-      context.pubsub.publish("SNAP_ADDED", { createSnap: newSnap });
+      context.pubsub.publish("SNAP_ADDED", { snap: newSnap });
 
       return await newSnap.save();
 

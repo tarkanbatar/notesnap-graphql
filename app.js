@@ -39,7 +39,6 @@ const serverCleanup = useServer(
   {
     schema,
     context: async (ctx) => {
-      // WebSocket context for subscriptions
       return {
         db: { User, Snap },
         pubsub,
