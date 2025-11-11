@@ -28,3 +28,7 @@ type Mutation {
   addUser(input: NewUserInput!): Token!
   signIn(input: SignInInput!): Token!
 }
+
+type Subscription {
+  user: User!
+}

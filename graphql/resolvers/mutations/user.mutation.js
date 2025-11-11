@@ -16,6 +16,9 @@ module.exports = {
         });
         
         await newUser.save();
+
+        context.pubsub.publish("USER_ADDED", { user: newUser });
+
         const jwt = token.generate({ id: newUser._id, username: newUser.username });
         return { token: jwt };
     },
